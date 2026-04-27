@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-DemoApplication<apacheagedemo>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "uk.co.sheffieldwebprogrammer.apacheagedemo.ApacheagedemoApplication",
+            "projectName": "apacheagedemo",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
