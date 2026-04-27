@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
 
 import uk.co.sheffieldwebprogrammer.apacheagedemo.repository.PersonRepository;
 
@@ -41,5 +42,22 @@ public class TestController {
         return personRepository.deleteAll();
 
     }
+    @GetMapping("/get-all")
+    public String getAll() {
+        try {
+            return personRepository.getAll();
+        } catch (Exception e) {
+            return "Error retrieving data: " + e.getMessage();
+        }
+    }
 
+    @GetMapping(value = "/graph", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String graph() {
+        return personRepository.getGraph();
+    }
+
+    @GetMapping(value = "/graph/db", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String graphDb() {
+        return personRepository.getAll();
+    }
 }
