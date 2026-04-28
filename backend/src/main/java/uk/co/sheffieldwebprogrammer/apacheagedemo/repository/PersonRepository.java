@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import uk.co.sheffieldwebprogrammer.apacheagedemo.dto.Person;
+
 import javax.sql.DataSource;
 
 import org.apache.age.jdbc.base.Agtype;
@@ -107,6 +109,32 @@ public class PersonRepository {
         }
     }
 
+    public List<Person> getNodes(){
+        List<Person> persons = new ArrayList<>();
+         try (Connection conn = dataSource.getConnection()) {
+            try {
+                PGConnection pgConn = conn.unwrap(PGConnection.class);
+                if (pgConn != null) pgConn.addDataType("agtype", Agtype.class);
+            } catch (Exception ignore) {
+            }
+            // Build nodes list by querying distinct person names
+            List<String> nodes = new ArrayList<>();
+            try (Statement stmt = conn.createStatement()) {
+                String nodeQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (n:Person) RETURN DISTINCT n.name AS name, id(n) AS id $$) as (name text, id bigint);";
+                try (ResultSet rs = stmt.executeQuery(nodeQuery)) {
+                    while (rs.next()) {
+                        String name = rs.getString("name");
+                        Long id = rs.getLong("id");
+                        if (name != null && !name.isEmpty()) nodes.add(name);
+                        persons.add(new Person(name, id));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error retrieving nodes: " + e.getMessage());
+        }
+        return persons;
+    }
     
     public String getAll() {
         try (Connection conn = dataSource.getConnection()) {

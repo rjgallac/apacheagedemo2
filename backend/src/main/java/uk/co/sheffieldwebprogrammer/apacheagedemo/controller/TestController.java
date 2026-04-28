@@ -4,8 +4,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
 import org.springframework.http.MediaType;
 
+import uk.co.sheffieldwebprogrammer.apacheagedemo.dto.Person;
 import uk.co.sheffieldwebprogrammer.apacheagedemo.repository.PersonRepository;
 
 @RestController
@@ -22,6 +26,13 @@ public class TestController {
         return personRepository.createPerson(name);
         
     }
+
+    @GetMapping("list-people")
+    public List<Person> listpeople() {
+        return personRepository.getNodes();
+
+    }
+    
 
     @GetMapping("/create-edge")
     public String createEdge(

@@ -85,3 +85,26 @@ SELECT * from cypher('graph_name', $$
 $$) as (V agtype, R agtype, V2 agtype);
 
 SELECT * FROM cypher('graph_name', $$ MATCH (a)-[e]->(b) RETURN a, e, b $$) AS (a agtype, e agtype, b agtype);
+
+## find by id
+SELECT * FROM cypher('graph_name', $$
+    MATCH (n)
+    WHERE id(n) = toInteger('3377699720527879')
+    RETURN n
+$$) AS (n agtype);
+
+## CREATE LINK BY ID
+SELECT * 
+FROM cypher('graph_name', $$
+ 	MATCH (a:Person), (b:Person)
+    WHERE id(a) = 3377699720527879 AND id(b) = 3377699720527882
+    CREATE (a)-[e:RELTYPE]->(b)
+    RETURN e
+$$) as (e agtype);
+
+## delete by id
+
+SELECT * 
+FROM cypher('graph_name', $$
+	MATCH (n) WHERE ID(n) = 844424930132006 DETACH DELETE n
+$$) as (e agtype);
