@@ -61,6 +61,48 @@ public class PersonRepository {
         }
     }
 
+    public void createNodeAndRelation(String name, Long id1){
+
+        Person p = findById(id1);
+
+        try (Connection conn = dataSource.getConnection()) {
+            try {
+                PGConnection pgConn = conn.unwrap(PGConnection.class);
+                if (pgConn != null) pgConn.addDataType("agtype", Agtype.class);
+            } catch (Exception ignore) {
+            }
+
+            try (Statement stmt = conn.createStatement()) {
+                    String safe = escape(name);
+                    // Create the new node and return it 
+                    String cypher = String.format(
+                            "SELECT * FROM cypher('graph_name', $$ CREATE (a:Person {name:\"%s\"}) RETURN id(a) AS id $$) as (a agtype);",
+                            safe);
+
+                    ResultSet rs = stmt.executeQuery(cypher);
+                    Long id2 = null;
+                    if (rs != null) {
+                        if (rs.next()) {
+                           
+                            id2 = rs.getLong("a");
+                        }
+                    }
+                        
+                    rs.close();
+                    if (p != null) {
+                        String relationCypher = String.format(
+                                "SELECT * FROM cypher('graph_name', $$ MATCH (a:Person), (b:Person) WHERE id(a) = %d AND id(b) = %d CREATE (a)-[e:RELTYPE]->(b) RETURN e $$) as (e agtype);", id1, id2);
+                        ResultSet relRs = stmt.executeQuery(relationCypher);
+                        if (relRs != null) relRs.close();
+                    }
+
+                }
+        } catch (Exception e) {
+            System.err.println("Error creating node: " + e.getMessage());
+        }
+
+    }
+
     public String createRelation(String name1, String name2) {
         try (Connection conn = dataSource.getConnection()) {
                 try {
@@ -228,6 +270,56 @@ public class PersonRepository {
                 "    {\"source\": \"A\", \"target\": \"C\", \"value\": 2}\n" +
                 "  ]\n" +
                 "}";
+    }
+
+    public void deletebyid(Long id) {
+        try (Connection conn = dataSource.getConnection()) {
+            try {
+                PGConnection pgConn = conn.unwrap(PGConnection.class);
+                if (pgConn != null) pgConn.addDataType("agtype", Agtype.class);
+            } catch (Exception ignore) {
+            }
+
+            try (Statement stmt = conn.createStatement()) {
+                String cypher = String.format(
+                        "SELECT * FROM cypher('graph_name', $$ MATCH (n) WHERE id(n) = %d DETACH DELETE n $$) as (result agtype);",
+                        id);
+
+                ResultSet rs = stmt.executeQuery(cypher);
+                if (rs != null) rs.close();
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting node by ID: " + e.getMessage());
+        }
+    }
+
+    public Person findById(Long id){
+        try (Connection conn = dataSource.getConnection()) {
+            try {
+                PGConnection pgConn = conn.unwrap(PGConnection.class);
+                if (pgConn != null) pgConn.addDataType("agtype", Agtype.class);
+            } catch (Exception ignore) {
+            }
+
+            try (Statement stmt = conn.createStatement()) {
+                String cypher = String.format(
+                        "SELECT * FROM cypher('graph_name', $$ MATCH (n) WHERE id(n) = %d RETURN n.name AS name, id(n) AS id  $$) as (name text, id bigint);", id);
+
+                ResultSet rs = stmt.executeQuery(cypher);
+                if (rs.next()) {
+                    String name = rs.getString("name");
+                    Long nodeId = rs.getLong("id");
+                    return new Person(name, nodeId);
+                } else {
+                    System.err.println("Node not found with ID: " + id);
+                    return null;
+                }
+
+            }
+        } catch (Exception e) {
+            System.err.println("Error finding node by ID: " + e.getMessage());
+        }
+        return null;
     }
 
 }

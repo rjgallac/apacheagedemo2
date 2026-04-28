@@ -2,6 +2,7 @@ package uk.co.sheffieldwebprogrammer.apacheagedemo.controller;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -71,4 +72,22 @@ public class TestController {
     public String graphDb() {
         return personRepository.getAll();
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteNode(@PathVariable Long id) {
+        personRepository.deletebyid(id);
+        return "Node deleted successfully";
+    }
+
+    @GetMapping("/create-node-and-relation")
+    public String createNodeAndRelation(@RequestParam String name, @RequestParam Long id) {
+        personRepository.createNodeAndRelation(name, id);
+        return "Node and relation created successfully";
+    }
+
+    @GetMapping("{id}")
+    public Person getPersonById(@PathVariable Long id) {
+        return personRepository.findById(id);
+    }
+
 }
