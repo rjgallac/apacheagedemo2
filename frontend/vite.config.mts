@@ -32,6 +32,16 @@ export default defineConfig(() => ({
         changeOrigin: true,
         secure: false,
       },
+      '/list-people': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/create-node-and-relation': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
       '/delete-all': {
         target: 'http://localhost:8080',
         changeOrigin: true,
