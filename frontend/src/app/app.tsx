@@ -12,14 +12,14 @@ export function App() {
   const [newName, setNewName] = useState<string>('');
 
   const fetchGraph = () => {
-    fetch('/graph/db')
+    fetch('/api/person/graph/db')
       .then(res => res.json())
       .then(json => setData(json))
       .catch(err => console.error('Error fetching graph:', err));
   };
 
   const fetchPeople = () => {
-    fetch('/list-people')
+    fetch('/api/person')
       .then(res => res.json())
       .then((json: Person[]) => {
         setPeople(json);

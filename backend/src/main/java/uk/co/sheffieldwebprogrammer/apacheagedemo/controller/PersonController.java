@@ -3,6 +3,9 @@ package uk.co.sheffieldwebprogrammer.apacheagedemo.controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,25 +13,27 @@ import java.util.List;
 
 import org.springframework.http.MediaType;
 
+import uk.co.sheffieldwebprogrammer.apacheagedemo.dto.CreatePersonDto;
+import uk.co.sheffieldwebprogrammer.apacheagedemo.dto.CreatePersonRelationDto;
 import uk.co.sheffieldwebprogrammer.apacheagedemo.dto.Person;
 import uk.co.sheffieldwebprogrammer.apacheagedemo.repository.PersonRepository;
 
 @RestController
-public class TestController {
+@RequestMapping("/api/person")
+public class PersonController {
 
     private final PersonRepository personRepository;
 
-    public TestController(PersonRepository personRepository) {
+    public PersonController(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
    
-    @GetMapping("/create-node")
-    public String createNode(@RequestParam String name) {
-        return personRepository.createPerson(name);
-        
+    @PostMapping
+    public String createNode(@RequestBody CreatePersonDto createPersonDto) {
+        return personRepository.createPerson(createPersonDto.getName());
     }
 
-    @GetMapping("list-people")
+    @GetMapping
     public List<Person> listpeople() {
         return personRepository.getNodes();
 
@@ -41,12 +46,6 @@ public class TestController {
             @RequestParam String name2) {
         return personRepository.createRelation(name1, name2);
     }
-
-    @GetMapping("/test")
-    public String test() {
-        return "AGE Database Controller is running!";
-    }
-
     
     @DeleteMapping("/delete-all")
     public String deleteAll(){
@@ -79,9 +78,9 @@ public class TestController {
         return "Node deleted successfully";
     }
 
-    @GetMapping("/create-node-and-relation")
-    public String createNodeAndRelation(@RequestParam String name, @RequestParam Long id) {
-        personRepository.createNodeAndRelation(name, id);
+    @PostMapping("/create-node-and-relation")
+    public String createNodeAndRelation(@RequestBody CreatePersonRelationDto createPersonRelationDto) {
+        personRepository.createNodeAndRelation(createPersonRelationDto.getName(), createPersonRelationDto.getManagerId());
         return "Node and relation created successfully";
     }
 

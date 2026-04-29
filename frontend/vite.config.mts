@@ -12,37 +12,37 @@ export default defineConfig(() => ({
     host: 'localhost',
     proxy: {
       // Proxy API requests to the backend Spring Boot server
-      '/graph': {
+      '/api/person/graph': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
-      '/graph/db': {
+      '/api/person/graph/db': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
-      '/create-node': {
+      '/api/person/create-node': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
-      '/create-edge': {
+      '/api/person/create-edge': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
-      '/list-people': {
+      '/api/person': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
-      '/create-node-and-relation': {
+      '/api/person/create-node-and-relation': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
-      '/delete-all': {
+      '/api/person/delete-all': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,

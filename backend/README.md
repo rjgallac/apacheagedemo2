@@ -50,12 +50,26 @@ $$) as (e agtype);
 
 SELECT * FROM cypher('graph_name', $$ MATCH result = ()-[]->() RETURN result $$) as (result agtype);
 
-Delete all
+## Delete all
 
 SELECT * FROM cypher('graph_name', $$
     MATCH (n)
     DETACH DELETE n
 $$) AS (n agtype);
+
+## all nodes
+SELECT * 
+FROM cypher('graph_name', $$ 
+    MATCH (n) 
+    RETURN n 
+$$) AS (n agtype);   
+
+## all edges
+SELECT * 
+FROM cypher('graph_name', $$ 
+    MATCH ()-[e]->() RETURN e    
+$$) AS (e agtype);   
+
 
 https://github.com/apache/age/tree/master/drivers/jdbc
 mvn install:install-file -Dfile=lib.jar -DgroupId=com.age -DartifactId=age -Dversion=1.0.0 -Dpackaging=jar
