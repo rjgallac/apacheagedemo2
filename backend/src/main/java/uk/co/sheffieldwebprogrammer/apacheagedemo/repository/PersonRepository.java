@@ -22,7 +22,6 @@ import javax.sql.DataSource;
 import org.apache.age.jdbc.base.Agtype;
 import org.postgresql.PGConnection;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Repository
 public class PersonRepository {
@@ -197,9 +196,23 @@ public class PersonRepository {
                 }
             }
 
-            // Build links list by querying relationships between persons
+             // Build nodes list by querying distinct person names
+            List<String> companies = new ArrayList<>();
+            try (Statement stmt = conn.createStatement()) {
+                String nodeQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (n:Company) RETURN DISTINCT n.name AS name $$) as (name text);";
+                try (ResultSet rs = stmt.executeQuery(nodeQuery)) {
+                    while (rs.next()) {
+                        String name = rs.getString(1);
+                        if (name != null && !name.isEmpty()) companies.add(name);
+                    }
+                }
+            }
+
+            // Build links list by querying relationships between persons and companies
             class Link { public String source; public String target; public int value = 1; }
             List<Link> links = new ArrayList<>();
+
+            // Build links list by querying relationships between persons
             try (Statement stmt = conn.createStatement()) {
                 String linkQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (a:Person)-[e]->(b:Person) RETURN a.name AS source, b.name AS target $$) as (source text, target text);";
                 try (ResultSet rs = stmt.executeQuery(linkQuery)) {
@@ -216,6 +229,39 @@ public class PersonRepository {
                 }
             }
 
+            try (Statement stmt = conn.createStatement()) {
+                String linkQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (a:Person)-[e]->(b:Company) RETURN a.name AS source, b.name AS target $$) as (source text, target text);";
+                try (ResultSet rs = stmt.executeQuery(linkQuery)) {
+                    while (rs.next()) {
+                        String s = rs.getString(1);
+                        String t = rs.getString(2);
+                        if (s != null && t != null) {
+                            Link l = new Link();
+                            l.source = s;
+                            l.target = t;
+                            links.add(l);
+                        }
+                    }
+                }
+            }
+
+            try (Statement stmt = conn.createStatement()) {
+                String linkQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (a:Person)-[e]->(b:Company) RETURN a.name AS source, b.name AS target $$) as (source text, target text);";
+                try (ResultSet rs = stmt.executeQuery(linkQuery)) {
+                    while (rs.next()) {
+                        String s = rs.getString(1);
+                        String t = rs.getString(2);
+                        if (s != null && t != null) {
+                            Link l = new Link();
+                            l.source = s;
+                            l.target = t;
+                            links.add(l);
+                        }
+                    }
+                }
+            }
+            
+
             // Convert to JSON using Jackson
             try {
                 ObjectMapper mapper = new ObjectMapper();
@@ -227,6 +273,15 @@ public class PersonRepository {
                     n.put("group", 1);
                     nodesArr.add(n);
                 }
+
+                for (int i = 0; i < companies.size(); i++) {
+                    ObjectNode n = mapper.createObjectNode();
+                    n.put("id", companies.get(i));
+                    n.put("group", 2);
+                    nodesArr.add(n);
+                }
+
+
                 ArrayNode linksArr = mapper.createArrayNode();
                 for (Link l : links) {
                     ObjectNode o = mapper.createObjectNode();
@@ -235,6 +290,7 @@ public class PersonRepository {
                     o.put("value", l.value);
                     linksArr.add(o);
                 }
+
                 root.set("nodes", nodesArr);
                 root.set("links", linksArr);
                 return mapper.writeValueAsString(root);
