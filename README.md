@@ -4,3 +4,21 @@ gif of app
 ![screengrab](docs/apacheage.gif)
 
 npx nx serve frontend
+
+Company -> Dept -> Team -> Person
+
+Person -> Person
+
+Project -> Project
+
+Project -> Person
+
+Team -> Project
+
+
+
+https://github.com/vasturiano/react-force-graph
+
+https://bkrem.github.io/react-d3-tree/
+
+https://echarts.apache.org/examples/en/editor.html?c=tree-vertical
