@@ -13,7 +13,6 @@ import org.postgresql.PGConnection;
 import org.springframework.stereotype.Repository;
 
 import uk.co.sheffieldwebprogrammer.apacheagedemo.dto.CompanyDto;
-import uk.co.sheffieldwebprogrammer.apacheagedemo.dto.Person;
 
 @Repository
 public class CompanyRepository {

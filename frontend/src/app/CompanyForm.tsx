@@ -84,34 +84,55 @@ export default function CompanyForm() {
 
     return (
         <div>
-            <h4>add company</h4>
-            <form onSubmit={addCompany} >
-                <label>
-                    Company Name:
-                    <input value={newCompany} onChange={e => setNewCompany(e.target.value)}type="text" />
-                </label>
-                <button type="submit">Create Company</button>
-            </form>
-            <h4>link company to person</h4>
-            <form onSubmit={linkCompany}>
-                <label style={{display: 'flex', gap: 6, alignItems: 'center'}}>
-                    Select person:
-                    <select value={selectedPersonId} onChange={e => setSelectedPersonId(e.target.value)}>
-                        {people.map(p => (
-                        <option key={p.id} value={String(p.id)}>{p.name}</option>
-                        ))}
-                    </select>
-                </label>
-                <label style={{display: 'flex', gap: 6, alignItems: 'center'}}>
-                    Select company:
-                    <select value={selectedCompanyId} onChange={e => setSelectedCompanyId(e.target.value)}>
-                        {companies.map(c => (
-                        <option key={c.id} value={String(c.id)}>{c.name}</option>
-                        ))}
-                    </select>
-                </label>
-                <button type="submit">Create Employment Relation</button>
-            </form>
+            <details style={{ padding: 12, backgroundColor: 'cadetblue', opacity: '70%', paddingLeft: '20px', cursor: 'pointer'}}>
+                <summary>add company</summary>
+                 <form onSubmit={addCompany} >
+                    <label>
+                        Company Name:
+                        <input value={newCompany} onChange={e => setNewCompany(e.target.value)}type="text" style={{width: 'stretch', padding: '10px', marginTop: '10px'}}/>
+                    </label>
+                    <button type="submit" style={{width: 'stretch', backgroundColor: 'seagreen', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Create Company</button>
+                </form>
+            </details>
+
+            <details style={{padding: 12, backgroundColor: 'cadetblue', opacity: '70%', paddingLeft: '20px'}}>
+                <summary>link company to person</summary>
+                <form onSubmit={linkCompany}>
+                    <label style={{display: 'flex', gap: 6, alignItems: 'center'}}>
+                        Select person:
+                        <select value={selectedPersonId} onChange={e => setSelectedPersonId(e.target.value)} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
+                            {people.map(p => (
+                            <option key={p.id} value={String(p.id)}>{p.name}</option>
+                            ))}
+                        </select>
+                    </label>
+                    <label >
+                        Select company:
+                        <select value={selectedCompanyId} onChange={e => setSelectedCompanyId(e.target.value)} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
+                            {companies.map(c => (
+                            <option key={c.id} value={String(c.id)}>{c.name}</option>
+                            ))}
+                        </select>
+                    </label>
+                    <button type="submit" style={{width: 'stretch', backgroundColor: 'seagreen', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Create Employment Relation</button>
+                </form>
+            </details>
+            <details style={{marginBottom: 12, padding: 12, backgroundColor: 'cadetblue', opacity: '70%', paddingLeft: '20px'}}>
+                <summary>Delete Company</summary>
+                <form>  
+                
+                    <label >
+                        Select company:
+                        <select value={selectedCompanyId} onChange={e => setSelectedCompanyId(e.target.value)} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
+                            {companies.map(c => (
+                            <option key={c.id} value={String(c.id)}>{c.name}</option>
+                            ))}
+                        </select>
+
+                    </label>
+                    <button type="submit" style={{width: 'stretch', backgroundColor: 'indianred', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Delete Company</button>
+                </form>
+            </details>
         </div>
     )
 }

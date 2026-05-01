@@ -11,10 +11,10 @@ import org.postgresql.PGConnection;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ProjectRepository {
+public class TeamRepository {
     private final DataSource dataSource;
 
-    public ProjectRepository(DataSource dataSource) {
+    public TeamRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -22,7 +22,7 @@ public class ProjectRepository {
         return s == null ? "" : s.replace("'", "''");
     }
 
-    public String createProject(String name) {
+    public String createTeam(String name) {
         try (Connection conn = dataSource.getConnection()) {
             try {
                 PGConnection pgConn = conn.unwrap(PGConnection.class);
@@ -33,7 +33,7 @@ public class ProjectRepository {
             try (Statement stmt = conn.createStatement()) {
                     String safe = escape(name);
                     String cypher = String.format(
-                            "SELECT * FROM cypher('graph_name', $$ CREATE (a:Project {name:\"%s\"}) RETURN a $$) as (a agtype);",
+                            "SELECT * FROM cypher('graph_name', $$ CREATE (a:Person {name:\"%s\"}) RETURN a $$) as (a agtype);",
                             safe);
 
                     ResultSet rs = stmt.executeQuery(cypher);

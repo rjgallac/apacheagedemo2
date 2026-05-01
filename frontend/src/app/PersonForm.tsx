@@ -48,7 +48,53 @@ export default function PersonForm() {
 
     return (
         <div>
+            <h4>Add Person</h4>
+
             <form onSubmit={handleSubmit} style={{padding: 12, display: 'flex', gap: 8, flexDirection: 'column'}}>
+                <label>
+                    <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="Person name" type="text" style={{width: 'stretch', padding: '10px'}}/>
+                </label>
+
+                <button type="submit" style={{width: 'stretch', backgroundColor: 'seagreen', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Create Person</button>
+            </form>
+
+            <form onSubmit={handleSubmit} style={{padding: 12, display: 'flex', gap: 8, flexDirection: 'column'}}>
+                <label>
+                Select person:
+                <select value={selectedId} onChange={e => setSelectedId(e.target.value)} style={{width: 'stretch', padding: '10px'}}>
+                    {people.map(p => (
+                    <option key={p.id} value={String(p.id)}>{p.name}</option>
+                    ))}
+                </select>
+                </label>
+
+                <label >
+                New name:
+                <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="Name for new node" style={{width: 'stretch', padding: '10px'}} />
+                </label>
+
+                <button type="submit" style={{width: 'stretch', backgroundColor: 'seagreen', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Create node + relation</button>
+            </form>
+
+            <h4>Delete Person</h4>
+            <form onSubmit={e => {
+                e.preventDefault();
+                if (!selectedId) return;
+                fetch('/api/person/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    },
+                    body: JSON.stringify({
+                        "id": selectedId
+                    })
+                }).then(res => res.text())
+                .then(text => {
+                    console.log('delete-person:', text);
+                    fetchPeople();
+                })
+                .catch(err => console.error('Error deleting person:', err));
+            }} style={{padding: 12, display: 'flex', gap: 8, flexDirection: 'column'}}>
                 <label style={{display: 'flex', gap: 6, alignItems: 'center'}}>
                 Select person:
                 <select value={selectedId} onChange={e => setSelectedId(e.target.value)}>
@@ -57,13 +103,7 @@ export default function PersonForm() {
                     ))}
                 </select>
                 </label>
-
-                <label style={{display: 'flex', gap: 6, alignItems: 'center'}}>
-                New name:
-                <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="Name for new node" />
-                </label>
-
-                <button type="submit">Create node + relation</button>
+                <button type="submit" style={{width: 'stretch', backgroundColor: 'indianred', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Delete Person</button>
             </form>
         </div>
     );
