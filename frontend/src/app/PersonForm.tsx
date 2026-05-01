@@ -80,14 +80,11 @@ export default function PersonForm() {
             <form onSubmit={e => {
                 e.preventDefault();
                 if (!selectedId) return;
-                fetch('/api/person/delete', {
-                    method: 'POST',
+                fetch(`/api/person/${selectedId}`, {
+                    method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8'
-                    },
-                    body: JSON.stringify({
-                        "id": selectedId
-                    })
+                    }
                 }).then(res => res.text())
                 .then(text => {
                     console.log('delete-person:', text);
@@ -96,13 +93,14 @@ export default function PersonForm() {
                 .catch(err => console.error('Error deleting person:', err));
             }} style={{padding: 12, display: 'flex', gap: 8, flexDirection: 'column'}}>
                 <label style={{display: 'flex', gap: 6, alignItems: 'center'}}>
-                Select person:
-                <select value={selectedId} onChange={e => setSelectedId(e.target.value)}>
+                    Select person:
+                </label>
+
+                <select value={selectedId} onChange={e => setSelectedId(e.target.value)} style={{width: 'stretch', padding: '10px'}}>
                     {people.map(p => (
                     <option key={p.id} value={String(p.id)}>{p.name}</option>
                     ))}
                 </select>
-                </label>
                 <button type="submit" style={{width: 'stretch', backgroundColor: 'indianred', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Delete Person</button>
             </form>
         </div>

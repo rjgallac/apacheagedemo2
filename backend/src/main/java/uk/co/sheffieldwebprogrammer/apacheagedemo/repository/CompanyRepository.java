@@ -98,4 +98,26 @@ public class CompanyRepository {
         return companies;
     }
 
+    public String deleteCompany(Long id) {
+        try (Connection conn = dataSource.getConnection()) {
+            try {
+                PGConnection pgConn = conn.unwrap(PGConnection.class);
+                if (pgConn != null) pgConn.addDataType("agtype", Agtype.class);
+            } catch (Exception ignore) {
+            }
+
+            try (Statement stmt = conn.createStatement()) {
+                String cypher = String.format(
+                        "SELECT * FROM cypher('graph_name', $$ MATCH (a:Company) WHERE id(a) = %d DELETE a RETURN a $$) as (a agtype);", id);
+
+                ResultSet rs = stmt.executeQuery(cypher);
+                if (rs != null) rs.close();
+
+                return "Company deleted successfully: " + id;
+            }
+        } catch (Exception e) {
+            return "Error deleting company: " + e.getMessage();
+        }
+    }
+
 }

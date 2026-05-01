@@ -82,6 +82,23 @@ export default function CompanyForm() {
         }
     }
 
+    const deleteCompany = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedCompanyId) return;
+        try {
+            const res = await fetch(`/api/company/${selectedCompanyId}`, {
+                method: 'DELETE',
+            });
+            const text = await res.text();
+            console.log('delete-company:', text);
+            setNewCompany('');
+            //   fetchGraph();
+            fetchCompanies();
+        } catch (err) {
+            console.error('Error deleting company:', err);
+        }
+    }
+
     return (
         <div>
             <details style={{ padding: 12, backgroundColor: 'cadetblue', opacity: '70%', paddingLeft: '20px', cursor: 'pointer'}}>
@@ -119,8 +136,7 @@ export default function CompanyForm() {
             </details>
             <details style={{marginBottom: 12, padding: 12, backgroundColor: 'cadetblue', opacity: '70%', paddingLeft: '20px'}}>
                 <summary>Delete Company</summary>
-                <form>  
-                
+                <form onSubmit={deleteCompany}>
                     <label >
                         Select company:
                         <select value={selectedCompanyId} onChange={e => setSelectedCompanyId(e.target.value)} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
@@ -128,7 +144,6 @@ export default function CompanyForm() {
                             <option key={c.id} value={String(c.id)}>{c.name}</option>
                             ))}
                         </select>
-
                     </label>
                     <button type="submit" style={{width: 'stretch', backgroundColor: 'indianred', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Delete Company</button>
                 </form>
