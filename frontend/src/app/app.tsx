@@ -36,12 +36,12 @@ export function App() {
       <div style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'row'}}>
         <div style={{flex: '0 0 20%', display: 'flex', flexDirection: 'column', backgroundColor: 'steelblue', opacity: '80%', padding: 12, gap: 12, overflow: 'scroll'}}>
           <details style={{cursor: 'pointer'}}>
-            <summary style={{backgroundColor: 'cadetblue', padding: 12, opacity: '70%' }}>Company</summary>
-            <CompanyForm />
+            <summary style={{backgroundColor: 'cadetblue', padding: 12, opacity: '70%' }} >Company</summary>
+            <CompanyForm refresh={fetchGraph}/>
           </details>
           <details>
             <summary style={{backgroundColor: 'cadetblue', padding: 12, opacity: '70%' }}>Dept</summary>
-            <DeptForm />
+            <DeptForm refresh={fetchGraph}/>
           </details>
           <details>
             <summary style={{backgroundColor: 'cadetblue', padding: 12, opacity: '70%' }}>Team</summary>

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 type Person = { id: number; name: string };
 type Company = { id: number; name: string };
 
-export default function CompanyForm() {
+export default function CompanyForm({ refresh } :any ) {
     const [people, setPeople] = useState<Person[]>([]);
     const [newCompany, setNewCompany] = useState<string>('');
     const [selectedPersonId, setSelectedPersonId] = useState<string>('');
@@ -50,7 +50,7 @@ export default function CompanyForm() {
             const text = await res.text();
             console.log('create-company:', text);
             setNewCompany('');
-            //   fetchGraph();
+            refresh();
             fetchCompanies();
             
         } catch (err) {
@@ -92,7 +92,7 @@ export default function CompanyForm() {
             const text = await res.text();
             console.log('delete-company:', text);
             setNewCompany('');
-            //   fetchGraph();
+            refresh();
             fetchCompanies();
         } catch (err) {
             console.error('Error deleting company:', err);

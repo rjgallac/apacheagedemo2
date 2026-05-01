@@ -52,6 +52,21 @@ export default defineConfig(() => ({
         changeOrigin: true,
         secure: false,
       },
+      '/api/department': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/team': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/project': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
   preview: {
