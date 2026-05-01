@@ -102,4 +102,31 @@ public class DepartmentRepository {
         }
     }
 
+    public void createLink(Long departmentId, Long companyId) {
+        try (Connection conn = dataSource.getConnection()) {
+            try {
+                PGConnection pgConn = conn.unwrap(PGConnection.class);
+                if (pgConn != null) pgConn.addDataType("agtype", Agtype.class);
+            } catch (Exception ignore) {
+            }
+
+            try (Statement stmt = conn.createStatement()) {
+                    String cypher = String.format(
+                            "SELECT * FROM cypher('graph_name', $$ MATCH (d:Department), (c:Company) WHERE id(d) = %d AND id(c) = %d CREATE (d)-[:BELONGS_TO]->(c) RETURN count(*) as createdCount $$) as (createdCount int);",
+                            departmentId, companyId);
+
+                    ResultSet rs = stmt.executeQuery(cypher);
+                    if (rs != null && rs.next()) {
+                        int createdCount = rs.getInt("createdCount");
+                        System.out.println("Created " + createdCount + " relationship(s) between Department ID: " + departmentId + " and Company ID: " + companyId);
+                        rs.close();
+                    } else {
+                        System.out.println("No nodes found with Department ID: " + departmentId + " or Company ID: " + companyId);
+                    }
+                }
+        } catch (Exception e) {
+            System.out.println("Error creating relationship: " + e.getMessage());
+        }
+    }
+
 }

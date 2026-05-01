@@ -61,12 +61,7 @@ public class PersonController {
             return "Error retrieving data: " + e.getMessage();
         }
     }
-
-    @GetMapping(value = "/graph", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String graph() {
-        return personRepository.getGraph();
-    }
-
+    
     @GetMapping(value = "/graph/db", produces = MediaType.APPLICATION_JSON_VALUE)
     public String graphDb() {
         return personRepository.getAll();

@@ -57,6 +57,11 @@ export default defineConfig(() => ({
         changeOrigin: true,
         secure: false,
       },
+      '/api/department/create-link': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
       '/api/team': {
         target: 'http://localhost:8080',
         changeOrigin: true,

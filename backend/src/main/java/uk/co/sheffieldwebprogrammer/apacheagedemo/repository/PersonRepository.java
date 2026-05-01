@@ -208,6 +208,18 @@ public class PersonRepository {
                 }
             }
 
+            // Build departments list by querying distinct department names
+            List<String> departments = new ArrayList<>();
+            try (Statement stmt = conn.createStatement()) {
+                String nodeQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (n:Department) RETURN DISTINCT n.name AS name $$) as (name text);";
+                try (ResultSet rs = stmt.executeQuery(nodeQuery)) {
+                    while (rs.next()) {
+                        String name = rs.getString(1);
+                        if (name != null && !name.isEmpty()) departments.add(name);
+                    }
+                }
+            }
+
             // Build links list by querying relationships between persons and companies
             class Link { public String source; public String target; public int value = 1; }
             List<Link> links = new ArrayList<>();
@@ -229,6 +241,7 @@ public class PersonRepository {
                 }
             }
 
+            // Build links list by querying relationships between persons and companies
             try (Statement stmt = conn.createStatement()) {
                 String linkQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (a:Person)-[e]->(b:Company) RETURN a.name AS source, b.name AS target $$) as (source text, target text);";
                 try (ResultSet rs = stmt.executeQuery(linkQuery)) {
@@ -244,6 +257,25 @@ public class PersonRepository {
                     }
                 }
             }
+
+            // build links between companies and departments
+
+            try (Statement stmt = conn.createStatement()) {
+                String linkQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (a:Department)-[e]->(b:Company) RETURN a.name AS source, b.name AS target $$) as (source text, target text);";
+                try (ResultSet rs = stmt.executeQuery(linkQuery)) {
+                    while (rs.next()) {
+                        String s = rs.getString(1);
+                        String t = rs.getString(2);
+                        if (s != null && t != null) {
+                            Link l = new Link();
+                            l.source = s;
+                            l.target = t;
+                            links.add(l);
+                        }
+                    }
+                }
+            }
+
 
             try (Statement stmt = conn.createStatement()) {
                 String linkQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (a:Person)-[e]->(b:Company) RETURN a.name AS source, b.name AS target $$) as (source text, target text);";
@@ -281,6 +313,13 @@ public class PersonRepository {
                     nodesArr.add(n);
                 }
 
+                for (int i = 0; i < departments.size(); i++) {
+                    ObjectNode n = mapper.createObjectNode();
+                    n.put("id", departments.get(i));
+                    n.put("group", 3);
+                    nodesArr.add(n);
+                }
+
 
                 ArrayNode linksArr = mapper.createArrayNode();
                 for (Link l : links) {
@@ -293,6 +332,7 @@ public class PersonRepository {
 
                 root.set("nodes", nodesArr);
                 root.set("links", linksArr);
+
                 return mapper.writeValueAsString(root);
             } catch (Exception je) {
                 return "Error building JSON: " + je.getMessage();
@@ -301,31 +341,6 @@ public class PersonRepository {
             System.err.println("Error retrieving nodes: " + e.getMessage());
             return "Error retrieving nodes: " + e.getMessage();
         }
-    }
-
-    public String getGraph() {
-        // Try to load a static JSON dataset from classpath: /static/miserables.json
-        try (InputStream is = getClass().getResourceAsStream("/static/miserables.json")) {
-            if (is != null) {
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-                    return br.lines().collect(Collectors.joining("\n"));
-                }
-            }
-        } catch (Exception ignore) {
-        }
-
-        // Fallback: return a small example graph similar to miserables.json
-        return "{\n" +
-                "  \"nodes\": [\n" +
-                "    {\"id\": \"A\", \"group\": 1},\n" +
-                "    {\"id\": \"B\", \"group\": 1},\n" +
-                "    {\"id\": \"C\", \"group\": 2}\n" +
-                "  ],\n" +
-                "  \"links\": [\n" +
-                "    {\"source\": \"A\", \"target\": \"B\", \"value\": 1},\n" +
-                "    {\"source\": \"A\", \"target\": \"C\", \"value\": 2}\n" +
-                "  ]\n" +
-                "}";
     }
 
     public void deletebyid(Long id) {
