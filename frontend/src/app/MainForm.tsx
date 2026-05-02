@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 type Node = { id: number; name: string, type: string };
 type Edge = { id: number; source: string, target: string, relation: string };
 
-export default function CompanyForm({ refresh } :any ) {
+export default function CompanyForm({ refresh, enums } :any ) {
     const [newNodeName, setNewNodeName] = useState<string>('');
     // FOR VERTICE
     const [selectedNodeId, setSelectedNodeId] = useState<number>(0);
@@ -10,7 +10,7 @@ export default function CompanyForm({ refresh } :any ) {
     // FOR EDGE
     const [selectedNodeId1, setSelectedNodeId1] = useState<string>('');
     const [selectedNodeId2, setSelectedNodeId2] = useState<string>('');
-    const [selectedRelationType, setSelectedRelationType] = useState<string>('EMPLOYED_AT');
+    const [selectedRelationType, setSelectedRelationType] = useState<string>('');
     const [selectedEdgeId, setSelectedEdgeId] = useState<number>(0);
     const [nodes, setNodes] = useState<Node[]>([]);
 
@@ -139,11 +139,10 @@ export default function CompanyForm({ refresh } :any ) {
                         Node Type:
                         <select value={selectedNodeType} onChange={e => setSelectedNodeType(e.target.value)} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
                             <option value="">-- Select Node Type --</option>
-                            <option value="Company">Company</option>
-                            <option value="Department">Department</option>
-                            <option value="Team">Team</option>
-                            <option value="Person">Person</option>
-                            <option value="Project">Project</option>
+                            {enums?.nodeEnums?.map((type: string) => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
+                           
                         </select>
                     </label>
                     <button type="submit" style={{width: 'stretch', backgroundColor: 'seagreen', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Create Node</button>
@@ -166,9 +165,9 @@ export default function CompanyForm({ refresh } :any ) {
                         Relation Type:
                         <select value={selectedRelationType} onChange={e => setSelectedRelationType(e.target.value)} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
                             <option value="">-- Select Relation --</option>
-                            <option value="EMPLOYED_AT">EMPLOYED_AT</option>
-                            <option value="MANAGES">MANAGES</option>
-                            <option value="WORKS_ON">WORKS_ON</option>
+                            {enums?.relationEnums?.map((type: string) => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
                             <option value="BELONGS_TO">BELONGS_TO</option>
                         </select>
                     </label>

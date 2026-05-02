@@ -6,15 +6,33 @@ import MainForm from './MainForm';
 
 export function App() {
   const [data, setData] = useState({nodes: [], links: []});
-  const [nodeFilter, setNodeFilter] = useState<string[]>(["Company", "Person", "Project", "Team", "Department"]);
-  const [relationFilter, setRelationFilter] = useState<string[]>(["EMPLOYED_AT", "WORKS_ON", "MANAGES", "MEMBER_OF", "PART_OF"]);
+  const [nodeFilter, setNodeFilter] = useState<string[]>([]);
+  const [enums, setEnums] = useState<{nodeEnums: string[], relationEnums: string[]}>({nodeEnums: [], relationEnums: []});
+  const [relationFilter, setRelationFilter] = useState<string[]>([]);
   const fgRef = useRef<any>(null);
+
   const fetchGraph = () => {
     fetch(`/api/graph?nodeFilter=${nodeFilter.join(',')}&relationFilter=${relationFilter.join(',')}`)
       .then(res => res.json())
       .then(json => setData(json))
       .catch(err => console.error('Error fetching graph:', err));
   };
+
+  const fetchEnums = () => {
+    fetch('/api/enums')
+      .then(res => res.json())
+      .then(json => {
+        setNodeFilter(json.nodeEnums);
+        setRelationFilter(json.relationEnums);
+        setEnums(json);
+      })
+      .catch(err => console.error('Error fetching enums:', err));
+  };
+
+  useEffect(() => {
+    fetchEnums();
+  }, []);
+
   const handleNodeFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setNodeFilter(prev => {
@@ -25,14 +43,14 @@ export function App() {
       }
     });
   }
+
   const handleRelationFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked, value } = e.target;
-    const key = value || name;
+     const { name, checked } = e.target;
     setRelationFilter(prev => {
       if (checked) {
-        return prev.includes(key) ? prev : [...prev, key];
+        return prev.includes(name) ? prev : [...prev, name];
       } else {
-        return prev.filter(r => r !== key);
+        return prev.filter(n => n !== name);
       }
     });
   }
@@ -66,21 +84,25 @@ export function App() {
       <div style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'row'}}>
         <div style={{flex: '0 0 20%', display: 'flex', flexDirection: 'column', backgroundColor: 'steelblue', opacity: '80%', padding: 12, gap: 12, overflow: 'scroll'}}>
 
-          <MainForm refresh={fetchGraph}/>
+          <MainForm refresh={fetchGraph} enums={enums}/>
           <label>
               Filter Nodes
-              <input type="checkbox" name="Company" checked={isNodeChecked("Company")} onChange={handleNodeFilterChange} />Company
-              <input type="checkbox" name="Person" checked={isNodeChecked("Person")} onChange={handleNodeFilterChange} />Person
-              <input type="checkbox" name="Project" checked={isNodeChecked("Project")} onChange={handleNodeFilterChange}  />Project
+              {enums?.nodeEnums?.map(type => (
+                <div key={type}>
+                  <input type="checkbox" name={type} checked={isNodeChecked(type)} onChange={handleNodeFilterChange} />
+                  {type}
+                </div>
+              ))}
           </label>
          
          <label>
               Filter Relationships
-              <input type="checkbox" name="EMPLOYED_AT" checked={isRelationChecked("EMPLOYED_AT")} onChange={handleRelationFilterChange} value="EMPLOYED_AT" />EMPLOYED_AT
-              <input type="checkbox" name="WORKS_ON" checked={isRelationChecked("WORKS_ON")} onChange={handleRelationFilterChange} value="WORKS_ON" />WORKS_ON
-              <input type="checkbox" name="MANAGES" checked={isRelationChecked("MANAGES")} onChange={handleRelationFilterChange} value="MANAGES" />MANAGES
-              <input type="checkbox" name="MEMBER_OF" checked={isRelationChecked("MEMBER_OF")} onChange={handleRelationFilterChange} value="MEMBER_OF" />MEMBER_OF
-              <input type="checkbox" name="PART_OF" checked={isRelationChecked("PART_OF")} onChange={handleRelationFilterChange} value="PART_OF" />PART_OF
+              {enums?.relationEnums?.map(type => (
+                <div key={type}>
+                  <input type="checkbox" name={type} checked={isRelationChecked(type)} onChange={handleRelationFilterChange} />
+                  {type}
+                </div>
+              ))}
          </label>
           
         </div>
