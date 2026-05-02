@@ -46,23 +46,6 @@ public class GraphRepository {
             class Link { public String source; public String target; public int value = 1; }
             List<Link> links = new ArrayList<>();
 
-            // Build links list by querying relationships between persons
-            try (Statement stmt = conn.createStatement()) {
-                String linkQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (a:Person)-[e]->(b:Person) RETURN a.name AS source, b.name AS target $$) as (source text, target text);";
-                try (ResultSet rs = stmt.executeQuery(linkQuery)) {
-                    while (rs.next()) {
-                        String s = rs.getString(1);
-                        String t = rs.getString(2);
-                        if (s != null && t != null) {
-                            Link l = new Link();
-                            l.source = s;
-                            l.target = t;
-                            links.add(l);
-                        }
-                    }
-                }
-            }
-
             // Build links list by querying relationships between persons and companies
             try (Statement stmt = conn.createStatement()) {
                 String linkQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (a)-[e]->(b) RETURN a.name AS source, b.name AS target $$) as (source text, target text);";

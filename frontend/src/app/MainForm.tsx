@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 type Node = { id: number; name: string, type: string };
-
+type Edge = { id: number; source: string, target: string, relation: string };
 
 export default function CompanyForm({ refresh } :any ) {
     const [newNodeName, setNewNodeName] = useState<string>('');
@@ -11,8 +11,10 @@ export default function CompanyForm({ refresh } :any ) {
     const [selectedNodeId1, setSelectedNodeId1] = useState<string>('');
     const [selectedNodeId2, setSelectedNodeId2] = useState<string>('');
     const [selectedRelationType, setSelectedRelationType] = useState<string>('EMPLOYED_AT');
-
+    const [selectedEdgeId, setSelectedEdgeId] = useState<number>(0);
     const [nodes, setNodes] = useState<Node[]>([]);
+
+    const [edges, setEdges] = useState<any[]>([]);
 
 
     const fetchNodes = () => {
@@ -24,8 +26,18 @@ export default function CompanyForm({ refresh } :any ) {
         .catch(err => console.error('Error fetching nodes:', err));
     };
 
+    const fetchEdges = () => {
+        fetch('/api/edge')
+        .then(res => res.json())
+        .then((json: Edge[]) => {
+            setEdges(json);
+        })
+        .catch(err => console.error('Error fetching edges:', err));
+    };
+
     useEffect(() => {
         fetchNodes();
+        fetchEdges();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -71,7 +83,7 @@ export default function CompanyForm({ refresh } :any ) {
             const text = await res.text();
             console.log('create-edge:', text);
             setNewNodeName('');
-            //   fetchGraph();
+            refresh();
             fetchNodes();
         } catch (err) {
             console.error('Error creating edge:', err);
@@ -95,6 +107,24 @@ export default function CompanyForm({ refresh } :any ) {
             console.error('Error deleting node:', err);
         }
     }
+
+    const deleteEdge = async (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log('deleting edge with id:', selectedEdgeId);
+        if (!selectedEdgeId) return;
+        try {
+            const res = await fetch(`/api/edge/${selectedEdgeId}`, {
+                method: 'DELETE',
+            });
+            const text = await res.text();
+            console.log('delete-edge:', text);
+            setSelectedEdgeId(0);
+            refresh();
+            fetchEdges();
+        } catch (err) {
+            console.error('Error deleting edge:', err);
+        }
+    };
 
     return (
         <div>
@@ -167,6 +197,22 @@ export default function CompanyForm({ refresh } :any ) {
                         </select>
                     </label>
                     <button type="submit" style={{width: 'stretch', backgroundColor: 'indianred', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Delete Node</button>
+                </form>
+            </details>
+
+            <details style={{marginBottom: 12, padding: 12, backgroundColor: 'cadetblue', opacity: '70%', paddingLeft: '20px'}}>
+                <summary>Delete Edge</summary>
+                <form onSubmit={deleteEdge}>
+                    <label >
+                        Select edge:
+                        <select value={selectedEdgeId} onChange={e => setSelectedEdgeId(Number(e.target.value))} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
+                            <option value="">-- Select Edge --</option>
+                            {edges.map(edge => (
+                                <option key={edge.id} value={String(edge.id)}>{edge.source} - {edge.relation} - {edge.target}</option>
+                            ))}
+                        </select>
+                    </label>
+                    <button type="submit" style={{width: 'stretch', backgroundColor: 'indianred', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Delete Edge</button>
                 </form>
             </details>
         </div>
