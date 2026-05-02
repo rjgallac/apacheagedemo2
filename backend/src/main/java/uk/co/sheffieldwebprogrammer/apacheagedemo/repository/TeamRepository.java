@@ -33,16 +33,16 @@ public class TeamRepository {
             try (Statement stmt = conn.createStatement()) {
                     String safe = escape(name);
                     String cypher = String.format(
-                            "SELECT * FROM cypher('graph_name', $$ CREATE (a:Person {name:\"%s\"}) RETURN a $$) as (a agtype);",
+                            "SELECT * FROM cypher('graph_name', $$ CREATE (a:Team {name:\"%s\"}) RETURN a $$) as (a agtype);",
                             safe);
 
                     ResultSet rs = stmt.executeQuery(cypher);
                     if (rs != null) rs.close();
 
-                    return "Node created successfully: " + name;
+                    return "team created successfully: " + name;
                 }
         } catch (Exception e) {
-            return "Error creating node: " + e.getMessage();
+            return "Error creating team: " + e.getMessage();
         }
     }
 }

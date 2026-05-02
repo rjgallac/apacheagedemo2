@@ -19,43 +19,37 @@ export function App() {
       .catch(err => console.error('Error fetching graph:', err));
   };
 
- 
-
   useEffect(() => {
     fetchGraph();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
- 
-
   return (
     <div>
-      <div style={{width: '100vw', height: '10vh', display: 'flex', flexDirection: 'row', backgroundColor: 'steelblue', alignItems: 'center', justifyContent: 'center', opacity: '50%', }}>
+      <div className="header">
         <h1>Your Company Tree</h1>
       </div>
       <div style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'row'}}>
         <div style={{flex: '0 0 20%', display: 'flex', flexDirection: 'column', backgroundColor: 'steelblue', opacity: '80%', padding: 12, gap: 12, overflow: 'scroll'}}>
           <details style={{cursor: 'pointer'}}>
-            <summary style={{backgroundColor: 'cadetblue', padding: 12, opacity: '70%' }} >Company</summary>
+            <summary className="menu" >Company</summary>
             <CompanyForm refresh={fetchGraph}/>
           </details>
           <details>
-            <summary style={{backgroundColor: 'cadetblue', padding: 12, opacity: '70%' }}>Dept</summary>
+            <summary className="menu" >Dept</summary>
             <DeptForm refresh={fetchGraph}/>
           </details>
           <details>
-            <summary style={{backgroundColor: 'cadetblue', padding: 12, opacity: '70%' }}>Team</summary>
-            <TeamForm />
+            <summary className="menu" >Team</summary>
+            <TeamForm refresh={fetchGraph} />
           </details>
           <details>
-            <summary style={{backgroundColor: 'cadetblue', padding: 12, opacity: '70%' }}>Person</summary>
-            <PersonForm />
-          </details>
-
-         
-          <details>
-            <summary style={{backgroundColor: 'cadetblue', padding: 12, opacity: '70%' }}>Projects</summary> 
+            <summary className="menu" >Projects</summary> 
             <ProjectForm />
+          </details>
+          <details>
+            <summary className="menu" >Person</summary>
+            <PersonForm refresh={fetchGraph} />
           </details>
         </div>
         <div style={{flex: 1, backgroundColor: 'aliceblue'}}>

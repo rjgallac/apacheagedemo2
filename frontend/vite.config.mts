@@ -72,6 +72,16 @@ export default defineConfig(() => ({
         changeOrigin: true,
         secure: false,
       },
+      '/api/node': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false
+      },
+      '/api/edge': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false
+      }
     },
   },
   preview: {
