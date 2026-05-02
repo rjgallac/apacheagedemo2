@@ -16,10 +16,14 @@ public class GraphController {
         this.graphRepository = graphRepository;
     }
 
-    @GetMapping
-    public String graphDb() {
-        String[] nodeMatches = new String[] {"Company", "Person"};
-        String[] relationMatches = new String[] {"EMPLOYED_AT"};
-        return graphRepository.getAll(nodeMatches, relationMatches);
+    @GetMapping(produces = "application/json")
+    public String graphDb(String[] nodeFilter, String[] relationFilter) {
+        if (nodeFilter == null) {
+            nodeFilter = new String[] {"Company", "Person", "Project", "Team", "Department"};
+        }
+        if (relationFilter == null) {
+            relationFilter = new String[] {"EMPLOYED_AT", "WORKS_ON", "MANAGES", "MEMBER_OF"};
+        }
+        return graphRepository.getAll(nodeFilter, relationFilter);
     } 
 }
