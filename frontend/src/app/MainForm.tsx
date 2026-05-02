@@ -76,7 +76,7 @@ export default function CompanyForm({ refresh, enums } :any ) {
                 body: JSON.stringify({
                     "nodeId1": selectedNodeId1,
                     "nodeId2": selectedNodeId2,
-                    "relation": "EMPLOYED_AT"
+                    "relation": selectedRelationType
                 })
             });
             const text = await res.text();
@@ -163,7 +163,6 @@ export default function CompanyForm({ refresh, enums } :any ) {
                             {enums?.relationEnums?.map((type: string) => (
                                 <option key={type} value={type}>{type}</option>
                             ))}
-                            <option value="BELONGS_TO">BELONGS_TO</option>
                         </select>
                     </label>
                     <label style={{display: 'flex', gap: 6, alignItems: 'center'}}>

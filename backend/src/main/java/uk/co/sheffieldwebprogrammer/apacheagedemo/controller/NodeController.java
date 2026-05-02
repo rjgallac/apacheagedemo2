@@ -2,7 +2,6 @@ package uk.co.sheffieldwebprogrammer.apacheagedemo.controller;
 
 import java.util.List;
 
-import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.co.sheffieldwebprogrammer.apacheagedemo.dto.NodeDto;
 import uk.co.sheffieldwebprogrammer.apacheagedemo.repository.NodeRepository;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/api/node")
@@ -30,7 +27,6 @@ public class NodeController {
     public List<NodeDto> getAll() {
         return nodeRepository.getAllNodes();
     }
-    
 
     @PostMapping
     public String createNode(@RequestBody NodeDto createNodeDto) {

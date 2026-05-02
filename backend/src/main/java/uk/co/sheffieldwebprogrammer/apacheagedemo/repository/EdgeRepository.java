@@ -13,7 +13,6 @@ import org.apache.age.jdbc.base.Agtype;
 import org.postgresql.PGConnection;
 import org.springframework.stereotype.Repository;
 
-import uk.co.sheffieldwebprogrammer.apacheagedemo.dto.EdgeDto;
 import uk.co.sheffieldwebprogrammer.apacheagedemo.dto.EdgeGraphDto;
 
 @Repository
