@@ -55,7 +55,6 @@ export default function CompanyForm({ refresh, enums } :any ) {
                 })
             });
             const text = await res.text();
-            console.log('create-node:', text);
             setSelectedNodeType('');
             refresh();
             fetchNodes();
@@ -81,7 +80,6 @@ export default function CompanyForm({ refresh, enums } :any ) {
                 })
             });
             const text = await res.text();
-            console.log('create-edge:', text);
             setNewNodeName('');
             refresh();
             fetchNodes();
@@ -92,14 +90,12 @@ export default function CompanyForm({ refresh, enums } :any ) {
 
     const deleteNode = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('deleting node with id:', selectedNodeId);
         if (!selectedNodeId) return;
         try {
             const res = await fetch(`/api/node/${selectedNodeId}`, {
                 method: 'DELETE',
             });
             const text = await res.text();
-            console.log('delete-node:', text);
             setNewNodeName('');
             refresh();
             fetchNodes();
@@ -110,14 +106,12 @@ export default function CompanyForm({ refresh, enums } :any ) {
 
     const deleteEdge = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('deleting edge with id:', selectedEdgeId);
         if (!selectedEdgeId) return;
         try {
             const res = await fetch(`/api/edge/${selectedEdgeId}`, {
                 method: 'DELETE',
             });
             const text = await res.text();
-            console.log('delete-edge:', text);
             setSelectedEdgeId(0);
             refresh();
             fetchEdges();
@@ -128,16 +122,16 @@ export default function CompanyForm({ refresh, enums } :any ) {
 
     return (
         <div>
-            <details style={{ padding: 12, backgroundColor: 'cadetblue', opacity: '70%', paddingLeft: '20px', cursor: 'pointer'}}>
+            <details className="menu-item">
                 <summary>add Node</summary>
                  <form onSubmit={addNode} >
                     <label>
                         Node Name:
-                        <input value={newNodeName} onChange={e => setNewNodeName(e.target.value)}type="text" style={{width: 'stretch', padding: '10px', marginTop: '10px'}}/>
+                        <input value={newNodeName} onChange={e => setNewNodeName(e.target.value)}type="text" className="input"/>
                     </label>
                     <label>
                         Node Type:
-                        <select value={selectedNodeType} onChange={e => setSelectedNodeType(e.target.value)} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
+                        <select value={selectedNodeType} onChange={e => setSelectedNodeType(e.target.value)} className="input">
                             <option value="">-- Select Node Type --</option>
                             {enums?.nodeEnums?.map((type: string) => (
                                 <option key={type} value={type}>{type}</option>
@@ -145,25 +139,26 @@ export default function CompanyForm({ refresh, enums } :any ) {
                            
                         </select>
                     </label>
-                    <button type="submit" style={{width: 'stretch', backgroundColor: 'seagreen', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Create Node</button>
+                    <button type="submit" className="submit-btn">Create Node</button>
                 </form>
             </details>
 
-            <details style={{padding: 12, backgroundColor: 'cadetblue', opacity: '70%', paddingLeft: '20px'}}>
+            <details className="menu-item">
                 <summary>Create Edge</summary>
                 <form onSubmit={createEdge}>
                     <label style={{display: 'flex', gap: 6, alignItems: 'center'}}>
                         Select Node 1:
-                        <select value={selectedNodeId1} onChange={e => setSelectedNodeId1(e.target.value)} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
-                            <option value="">-- Select Node --</option>
-                            {nodes.map(node => (
-                                <option key={node.id} value={String(node.id)}>{node.name}</option>
-                            ))}
-                        </select>
                     </label>
+
+                    <select value={selectedNodeId1} onChange={e => setSelectedNodeId1(e.target.value)} className="input">
+                        <option value="">-- Select Node --</option>
+                        {nodes.map(node => (
+                            <option key={node.id} value={String(node.id)}>{node.name}</option>
+                        ))}
+                    </select>
                     <label>
                         Relation Type:
-                        <select value={selectedRelationType} onChange={e => setSelectedRelationType(e.target.value)} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
+                        <select value={selectedRelationType} onChange={e => setSelectedRelationType(e.target.value)} className="input">
                             <option value="">-- Select Relation --</option>
                             {enums?.relationEnums?.map((type: string) => (
                                 <option key={type} value={type}>{type}</option>
@@ -173,38 +168,39 @@ export default function CompanyForm({ refresh, enums } :any ) {
                     </label>
                     <label style={{display: 'flex', gap: 6, alignItems: 'center'}}>
                         Select Node 2:
-                        <select value={selectedNodeId2} onChange={e => setSelectedNodeId2(e.target.value)} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
-                            <option value="">-- Select Node --</option>
-                            {nodes.map(node => (
-                                <option key={node.id} value={String(node.id)}>{node.name}</option>
-                            ))}
-                        </select>
                     </label>
-                    <button type="submit" style={{width: 'stretch', backgroundColor: 'seagreen', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Create Employment Relation</button>
+
+                    <select value={selectedNodeId2} onChange={e => setSelectedNodeId2(e.target.value)} className="input">
+                        <option value="">-- Select Node --</option>
+                        {nodes.map(node => (
+                            <option key={node.id} value={String(node.id)}>{node.name}</option>
+                        ))}
+                    </select>
+                    <button type="submit" className="submit-btn">Create Employment Relation</button>
                 </form>
             </details>
-            <details style={{marginBottom: 12, padding: 12, backgroundColor: 'cadetblue', opacity: '70%', paddingLeft: '20px'}}>
+            <details className="menu-item">
                 <summary>Delete Node</summary>
                 <form onSubmit={deleteNode}>
                     <label >
                         Select node:
-                        <select value={selectedNodeId} onChange={e => setSelectedNodeId(Number(e.target.value))} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
+                        <select value={selectedNodeId} onChange={e => setSelectedNodeId(Number(e.target.value))} className="input">
                             <option value="">-- Select Node --</option>
                             {nodes.map(node => (
                                 <option key={node.id} value={String(node.id)}>{node.name}</option>
                             ))}
                         </select>
                     </label>
-                    <button type="submit" style={{width: 'stretch', backgroundColor: 'indianred', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Delete Node</button>
+                    <button type="submit" className="submit-btn">Delete Node</button>
                 </form>
             </details>
 
-            <details style={{marginBottom: 12, padding: 12, backgroundColor: 'cadetblue', opacity: '70%', paddingLeft: '20px'}}>
+            <details className="menu-item">
                 <summary>Delete Edge</summary>
                 <form onSubmit={deleteEdge}>
                     <label >
                         Select edge:
-                        <select value={selectedEdgeId} onChange={e => setSelectedEdgeId(Number(e.target.value))} style={{width: 'stretch', padding: '10px', marginTop: '10px'}}>
+                        <select value={selectedEdgeId} onChange={e => setSelectedEdgeId(Number(e.target.value))} className="input">
                             <option value="">-- Select Edge --</option>
                             {edges.map(edge => (
                                 <option key={edge.id} value={String(edge.id)}>{edge.source} - {edge.relation} - {edge.target}</option>

@@ -82,7 +82,7 @@ export function App() {
         <h1>Your Company Tree</h1>
       </div>
       <div className="main-container">
-        <div style={{flex: '0 0 20%', display: 'flex', flexDirection: 'column', backgroundColor: 'steelblue', opacity: '80%', padding: 12, gap: 12, overflowY: 'scroll'}}>
+        <div className="side-bar">
 
           <MainForm refresh={fetchGraph} enums={enums}/>
           <label>
