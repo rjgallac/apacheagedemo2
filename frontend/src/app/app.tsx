@@ -65,7 +65,7 @@ export function App() {
     if (!fgRef.current) return;
     const t = setTimeout(() => {
       try {
-        fgRef.current.zoomToFit(400, 20);
+        fgRef.current.zoomToFit(200, 300);
       } catch (err) {
         // ignore if method is unavailable
       }
