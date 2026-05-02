@@ -123,7 +123,7 @@ export default function CompanyForm({ refresh, enums } :any ) {
     return (
         <div>
             <details className="menu-item">
-                <summary>add Node</summary>
+                <summary>Add Node</summary>
                  <form onSubmit={addNode} >
                     <label>
                         Node Name:
@@ -139,7 +139,7 @@ export default function CompanyForm({ refresh, enums } :any ) {
                            
                         </select>
                     </label>
-                    <button type="submit" className="submit-btn">Create Node</button>
+                    <button type="submit" className="submit-btn ok">Create Node</button>
                 </form>
             </details>
 
@@ -176,7 +176,7 @@ export default function CompanyForm({ refresh, enums } :any ) {
                             <option key={node.id} value={String(node.id)}>{node.name}</option>
                         ))}
                     </select>
-                    <button type="submit" className="submit-btn">Create Employment Relation</button>
+                    <button type="submit" className="submit-btn ok">Create Employment Relation</button>
                 </form>
             </details>
             <details className="menu-item">
@@ -191,7 +191,7 @@ export default function CompanyForm({ refresh, enums } :any ) {
                             ))}
                         </select>
                     </label>
-                    <button type="submit" className="submit-btn">Delete Node</button>
+                    <button type="submit" className="submit-btn warn">Delete Node</button>
                 </form>
             </details>
 
@@ -207,7 +207,7 @@ export default function CompanyForm({ refresh, enums } :any ) {
                             ))}
                         </select>
                     </label>
-                    <button type="submit" style={{width: 'stretch', backgroundColor: 'indianred', borderRadius: '5px', padding: '10px', marginTop: '10px'}}>Delete Edge</button>
+                    <button type="submit" className="submit-btn warn">Delete Edge</button>
                 </form>
             </details>
         </div>

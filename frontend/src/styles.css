@@ -50,13 +50,29 @@ body{
 }
 .submit-btn{
     width: stretch;
-    backgroun-color: indianred;
     border-radius: 5px;
     padding: 10px;
     margin-top: 10px;
+}
+.submit-btn.ok{
+    background-color: seagreen;
+
+}
+.submit-btn.warn{
+    background-color: indianred;
 }
 .input{
     width: stretch;
     padding: 10px;
     margin-top: 10px;
+}
+.menu-item label{
+    margin-top: 10px;
+    display: block;
+}
+.menu-item.filter div{
+    margin-top: 10px;
+}
+summary{
+    font-weight: bold;
 }

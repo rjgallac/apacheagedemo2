@@ -85,26 +85,32 @@ export function App() {
         <div className="side-bar">
 
           <MainForm refresh={fetchGraph} enums={enums}/>
-          <label>
-              Filter Nodes
+          <details className="menu-item filter">
+            <summary>Filter Nodes</summary>
+            <label>
+              
               {enums?.nodeEnums?.map(type => (
                 <div key={type}>
                   <input type="checkbox" name={type} checked={isNodeChecked(type)} onChange={handleNodeFilterChange} />
                   {type}
                 </div>
               ))}
-          </label>
-         
-         <label>
-              Filter Relationships
-              {enums?.relationEnums?.map(type => (
-                <div key={type}>
-                  <input type="checkbox" name={type} checked={isRelationChecked(type)} onChange={handleRelationFilterChange} />
-                  {type}
-                </div>
-              ))}
-         </label>
+            </label>
+          </details>
           
+         <details className="menu-item filter">
+            <summary>
+                Filter Relationships
+            </summary>
+            <label>
+                {enums?.relationEnums?.map(type => (
+                  <div key={type}>
+                    <input type="checkbox" name={type} checked={isRelationChecked(type)} onChange={handleRelationFilterChange} />
+                    {type}
+                  </div>
+                ))}
+            </label>
+          </details>
         </div>
         <div style={{flex: 1, backgroundColor: 'aliceblue', overflow: 'hidden'}}>
           <ForceGraph2D
