@@ -25,3 +25,9 @@ body{
     padding-left: 20px;
     cursor: pointer;
 }
+.main-container{
+    width: 100vw;
+    height: calc(100vh - 10vh); 
+    display: flex;
+    flex-direction: row;
+}

@@ -81,8 +81,8 @@ export function App() {
       <div className="header">
         <h1>Your Company Tree</h1>
       </div>
-      <div style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'row'}}>
-        <div style={{flex: '0 0 20%', display: 'flex', flexDirection: 'column', backgroundColor: 'steelblue', opacity: '80%', padding: 12, gap: 12, overflow: 'scroll'}}>
+      <div className="main-container">
+        <div style={{flex: '0 0 20%', display: 'flex', flexDirection: 'column', backgroundColor: 'steelblue', opacity: '80%', padding: 12, gap: 12, overflowY: 'scroll'}}>
 
           <MainForm refresh={fetchGraph} enums={enums}/>
           <label>
@@ -106,7 +106,7 @@ export function App() {
          </label>
           
         </div>
-        <div style={{flex: 1, backgroundColor: 'aliceblue'}}>
+        <div style={{flex: 1, backgroundColor: 'aliceblue', overflow: 'hidden'}}>
           <ForceGraph2D
             ref={fgRef}
             graphData={data}
@@ -114,6 +114,8 @@ export function App() {
             nodeAutoColorBy={n => n.group}
             linkDirectionalArrowLength={6}
             linkDirectionalArrowRelPos={1}
+            width={window.innerWidth * 0.8}
+            height={window.innerHeight * 0.9}
             nodeCanvasObject={(node, ctx, globalScale) => {
               const label = node.id;
               const fontSize = 12 / globalScale;
