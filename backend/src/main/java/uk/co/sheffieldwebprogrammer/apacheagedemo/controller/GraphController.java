@@ -18,6 +18,8 @@ public class GraphController {
 
     @GetMapping
     public String graphDb() {
-        return graphRepository.getAll();
+        String[] nodeMatches = new String[] {"Company", "Person"};
+        String[] relationMatches = new String[] {"EMPLOYED_AT"};
+        return graphRepository.getAll(nodeMatches, relationMatches);
     } 
 }

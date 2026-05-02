@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -23,7 +24,7 @@ public class GraphRepository {
     public GraphRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-    public String getAll() {
+    public String getAll(String[] nodeMatches, String[] relationMatches) {
         try (Connection conn = dataSource.getConnection()) {
             try {
                 PGConnection pgConn = conn.unwrap(PGConnection.class);
@@ -33,7 +34,11 @@ public class GraphRepository {
             // Build nodes list by querying distinct person names
             List<String> nodes = new ArrayList<>();
             try (Statement stmt = conn.createStatement()) {
-                String nodeQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (n) RETURN DISTINCT n.name AS name $$) as (name text);";
+                // WHERE (n:Person OR n:Movie) 
+                String labels = Arrays.stream(nodeMatches)
+                    .map(s -> "label(n)='" + s + "'")
+                    .collect(java.util.stream.Collectors.joining(" OR "));
+                String nodeQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (n) WHERE  " + labels + " RETURN DISTINCT n.name AS name $$) as (name text);";
                 try (ResultSet rs = stmt.executeQuery(nodeQuery)) {
                     while (rs.next()) {
                         String name = rs.getString(1);
@@ -48,7 +53,11 @@ public class GraphRepository {
 
             // Build links list by querying relationships between persons and companies
             try (Statement stmt = conn.createStatement()) {
-                String linkQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (a)-[e]->(b) RETURN a.name AS source, b.name AS target $$) as (source text, target text);";
+                // relationLabels should in the format of ['EMPLOYED_AT']
+                String relationLabels = Arrays.stream(relationMatches)
+                    .map(s -> "label(e)='" + s + "'")
+                    .collect(java.util.stream.Collectors.joining(" OR "));
+                String linkQuery = "SELECT * FROM cypher('graph_name', $$ MATCH (a)-[e]->(b) WHERE " + relationLabels + " RETURN a.name AS source, b.name AS target $$) as (source text, target text);";
                 try (ResultSet rs = stmt.executeQuery(linkQuery)) {
                     while (rs.next()) {
                         String s = rs.getString(1);
