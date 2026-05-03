@@ -1,0 +1,9 @@
+{
+  "name": "tree",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "tree/src",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project tree --web",
+  "targets": {}
+}

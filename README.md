@@ -4,6 +4,14 @@ gif of app
 ![screengrab](docs/apacheage.gif)
 
 npx nx serve frontend
+npx nx serve tree-frontend
+
+http://localhost:4200/
+http://localhost:4201/
+
+nx graph
+
+
 
 Company -> Dept -> Team -> Person
 
